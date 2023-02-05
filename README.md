@@ -2,8 +2,7 @@
 
 ## Learning Goals
 
-- Introduce the keyword `this`.
-- Define `this` as an instance method's invocation object.
+- Introduce the implicit parameter named `this`.
 - Access an instance variable using `this`.
 - Use the debugger to step into methods.
 
@@ -82,7 +81,7 @@ Consider the object state prior to executing the statement `fido.giveTreat();`:
 ![dog state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/dog_this_0.png)
 
 Take a close look at the `giveTreat()` instance method in the `Dog` class.
-Notice the method *does not* take a parameter that references a dog.
+Notice the method *does not* declare a parameter that references a dog.
 If we create two dogs, how does Java know which dog's `isWaggingTail`
 and `weight` variables to update?  
 
@@ -99,14 +98,14 @@ Every Java instance method has a special variable named `this`.
 Java assigns `this` to reference  the object used to call the method,
 which is called the **invocation object**.
 
-| Instance Method Call  | `this` reference | Java Visualizer                                                                                                                              |
-|-----------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `fido.giveTreat();`   | fido             | ![this fido](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/this_fido.png) <br>`this` points to same dog as `fido`       |
-| `snoopy.giveTreat();` | snoopy           | ![this snoopy](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/this_snoopy.png) <br>`this` points to same dog as `snoopy` |
+| Instance Method Call  | invocation object | Java Visualizer                                                                                                                              |
+|-----------------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `fido.giveTreat();`   | fido              | ![this fido](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/this_fido.png) <br>`this` points to same dog as `fido`       |
+| `snoopy.giveTreat();` | snoopy            | ![this snoopy](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/this_snoopy.png) <br>`this` points to same dog as `snoopy` |
 
 The `giveTreat` method will assign the `isWaggingTail` and `weight` variables
 of the invocation object referenced by `this`.  We can imagine
-the compiler evolves the statements as shown:
+the compiler evolves the statements in the method body as shown:
 
 | Programmer writes:      | Compiler generates:          |
 |-------------------------|------------------------------|
@@ -115,9 +114,10 @@ the compiler evolves the statements as shown:
 
 
 We can in fact rewrite all instance methods, but not the static `bark` method, to
-explicitly use dot notation and `this` as shown below.  Static methods do not have
-a `this` variable because they are not called using an object.  For example,
-notice how the `main` method can call the `bark` method without `fido` or `snoopy`.
+explicitly use dot notation and `this` as shown below.  Static methods do not
+have the variable `this` because they are not called using an object.
+For example, notice how the `main` method can call the `bark` method
+without `fido` or `snoopy`.
 
 ```java
 public class Dog {
@@ -176,10 +176,23 @@ public class Dog {
 
 However, we usually  omit `this`  inside instance methods
 and rely on the compiler to add it.  The only time we need
-to explicitly use `this` is when the  method contains a parameter or local
-variable with the same name as an instance variable, which
-is a situation we'll encounter when we define constructor
-methods.
+to explicitly reference `this` is when the  method contains
+a parameter or local variable with the same name as an instance
+variable, which is a situation we'll encounter when we define
+constructor methods.
+
+## Implicit Parameter
+
+The variable `this` is referred to as an *implicit parameter*
+because the instance method does not *explicitly* declare
+it as a parameter.   An implicit parameter is not defined
+as part of the method signature, but it is implied by the class
+declaring an instance method (i.e. a non-static method).
+
+Since Java uses `this` as a keyword for the implicit parameter's name,
+we can't define a variable named `this`.  We also can't assign
+`this` a value since that is done automatically when an instance
+method is called.
 
 ## Debugging Instance Methods  (Code Along)
 
@@ -204,20 +217,20 @@ see how `this` is used to access the instance variables.
    executing `fido.giveTreat()`.    
    ![dog state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/dog_this_0.png)
 3. Press "Step Into" to execute the method call `fido.giveTreat();`.
-   Notice the method `getTreat()` is added to the call stack and the variable `this` references the same object as
-   `fido`. Since "Step Into" was pressed, the debugger stops at the first line
-   of code in the `getTreat()` method.    
+   Notice the method `getTreat()` is added to the call stack and  `this`
+   references the same object as `fido`. Since "Step Into" was pressed,
+   the debugger stops at the first line of code in the `getTreat()` method.    
    ![fido debug](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_fido.png)
-4. You can press either "Step Over"  or "Step Into" to execute the code in the `giveTreat()`
-   method since neither line makes a method call.  Keep in mind that the compiler
-   evolves the code to use `this` to reference the instance variables:    
+4. You can press either "Step Over"  or "Step Into" to execute the two assignment
+   statements in the `giveTreat()` method since neither makes a method call.
+   Keep in mind that the compiler evolves the code to use `this` to access the instance variables:    
     
    | Programmer writes:      | Compiler generates:          |
    |-------------------------|------------------------------|
    | `isWaggingTail = true;` | `this.isWaggingTail = true;` |
    | `weight++;`             | `this.weight++;`             |
    
-   Step twice to execute the two lines of code. The object referenced by `this` is updated:     
+   Step twice to execute the two assignment statements. The object referenced by `this` is updated:     
    ![fido debug update state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_fido2.png)
    
 5. Step again to complete the `getTreat()` method and return to the `main` method.
@@ -229,27 +242,15 @@ see how `this` is used to access the instance variables.
    line in the method.  The variable `this` points at the same object as `snoopy`:     
    ![debugger this snoopy](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_snoopy.png)     
 
-   Step twice to execute the two lines of code. The object referenced by `this` is updated:     
+   Step twice to execute the two assignment statements. The object referenced by `this` is updated:     
    ![snoopy debug update state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_snoopy2.png)
 
 7. Press "Step Into" to return to the `main` method.
 8. Continue to press "Step Into" to execute the remaining method calls in the `main` method.
-   Observe how  `this` is assigned to the invocation object in each call to
+   Observe how  the implicit parameter `this` is assigned to the invocation object in each call to
    `giveBath` and `toString` (implicitly called in the print statement).  Notice
     the static method `bark` does not have a `this` reference when called.
-
-
-The variable `this` is often referred to as an *implicit* parameter
-because the instance method does not *explicitly* declare
-it as a parameter.   An implicit parameter is not defined as part of the method signature,
-but it is implied by the class declaring an instance method (i.e. a non-static method).
-
-Since Java uses `this` as a keyword for the implicit parameter's name,
-we can't define a variable named `this`.  We also can't assign
-`this` a value.
-
-
-
+ 
 ### Comprehension Check
 
 <details>
@@ -309,7 +310,7 @@ public class Liquid {
 
 ## Static Methods
 
-Since a static method is not called using an object, it
+Since a static method does *not* have an implicit parameter `this`, it
 can't access instance variables nor call instance methods
 unless it has an explicit reference to a class instance. 
 
@@ -329,8 +330,8 @@ public static void main(String[] args) {
 
 However, a compile-time error results if the `main` method tries
 to access the instance variable or method without using an object reference.
-The `main` method is a static method and is called without an object
-reference, therefore the compiler *can't* replace the code with `this.boilingPoint` or
+The `main` method is a static method and is called without an invocation object,
+therefore the compiler *can't* replace the code with `this.boilingPoint` or
 `this.isBoiling()` like it can in an instance method.
 
 ```java
@@ -343,7 +344,7 @@ public static void main(String[] args) {
 
 ## Conclusion
 
-Because an instance method is invoked using an object reference,
+An instance method is invoked using an object reference.
 Java provides an implicit parameter named `this`, which
 can be used to reference the invocation object within the method body.
 
