@@ -107,10 +107,10 @@ The `giveTreat` method will assign the `isWaggingTail` and `weight` variables
 of the invocation object referenced by `this`.  We can imagine
 the compiler evolves the statements in the method body as shown:
 
-| Programmer writes:      | Compiler generates:          |
-|-------------------------|------------------------------|
-| `isWaggingTail = true;` | `this.isWaggingTail = true;` |
-| `weight++;`             | `this.weight++;`             |
+| Programmer writes:      | Compiler generates:           |
+|-------------------------|-------------------------------|
+| `isWaggingTail = true;` | `this.isWaggingTail = true; ` |
+| `weight++; `            | `this.weight++;   `           |
 
 
 We can in fact rewrite all instance methods, but not the static `bark` method, to
@@ -199,58 +199,74 @@ method is called.
 Let's use the debugger to step into an instance method and see how it
 changes the state of the object referenced by `this`. 
 
-So far we've mostly used IntelliJ's step-over button while debugging.
-If the current line of code contains a method call, the step-over button
+So far we've mostly used IntelliJ's "Step Over" button while debugging.
+If the current line of code contains a method call, the "Step Over" button
 executes the method call and then proceeds to the next line of code.
 
 ![step over](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/step_over.png)
 
-However, we would like to "step-into" the instance methods to
-see how `this` is used to access the instance variables. 
+However, we would like to "Step Into" the instance methods to
+see how `this` is used to access the instance variables.
 
 ![step into](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/step_into.png)
 
 
-1. Set a breakpoint at the line of code `fido.giveTreat();` and launch the debugger.    
-   ![breakpoint](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/fido_breakpoint.png)
-2. Switch to the Java Visualizer view. The visualizer shows the current object state *prior* to
-   executing `fido.giveTreat()`.    
-   ![dog state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/dog_this_0.png)
-3. Press step-into to execute the method call `fido.giveTreat();`.
-   Notice the method `getTreat()` is added to the call stack and  `this`
-   references the same object as `fido`. Since step-into was pressed,
-   the debugger stops at the first line of code in the `getTreat()` method.    
-   ![fido debug](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_fido.png)
-4. Press step-over to execute the two assignment
-   statements in the `giveTreat()` method since neither makes a method call.
-   Keep in mind that the compiler evolves the code to use `this` to access the instance variables:    
-    
-   | Programmer writes:      | Compiler generates:          |
-   |-------------------------|------------------------------|
-   | `isWaggingTail = true;` | `this.isWaggingTail = true;` |
-   | `weight++;`             | `this.weight++;`             |
-   
-   Step-over twice to execute the two assignment statements. The object referenced by `this` is updated:     
-   ![fido debug update state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_fido2.png)
-   
-5. Step-over again to complete the `getTreat()` method and return to the `main` method.
-   Notice the `giveTreat` method has been removed from the call stack and the
-   debugger has stopped at the next line of code `snoopy.giveTreat();`.
-   ![fido givetreat method returned](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/fido_givetreat_complete.png)
+Set a breakpoint at the line of code `fido.giveTreat();` and
+launch the debugger.
 
-6. Press step-into to execute `snoopy.giveTreat()` and stop at the first
-   line in the method.  The variable `this` points at the same object as `snoopy`:     
-   ![debugger this snoopy](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_snoopy.png)     
+![breakpoint](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/fido_breakpoint.png)
 
-   Step-over twice to execute the two assignment statements. The object referenced by `this` is updated:     
-   ![snoopy debug update state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_snoopy2.png)
+Switch to the Java Visualizer view. The visualizer shows the current object state *prior* to
+executing `fido.giveTreat()`.
 
-7. Step-over again to return to the `main` method.
-8. Continue to press step-into to execute the remaining method calls in the `main` method,
-   while pressing step-over for assignment statements.
-   Observe how  the implicit parameter `this` is assigned to the invocation object in each call to
-   `giveBath` and `toString` (implicitly called in the print statement).  Notice
-    the static method `bark` does not have a `this` reference when called.
+![dog state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/dog_this_0.png)
+
+Press "Step Into" to execute the method call `fido.giveTreat();`.
+Notice the method `getTreat()` is added to the call stack and  `this`
+references the same object as `fido`. Since "Step Into" was pressed,
+the debugger stops at the first line of code in the `getTreat()` method.
+
+![fido debug](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_fido.png)
+
+Press "Step Over" to execute the two assignment
+statements in the `giveTreat()` method since neither makes a method call.
+Keep in mind that the compiler evolves the code to use `this`
+to access the instance variables:
+
+| Programmer writes:        | Compiler generates:           |
+|---------------------------|-------------------------------|
+| `isWaggingTail = true;`   | `this.isWaggingTail = true;`  |
+| `weight++;`               | `this.weight++;`              |
+
+Step-over twice to execute the two assignment statements.
+The object referenced by `this` is updated:
+
+![fido debug update state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_fido2.png)
+
+Press "Step Over" again to complete the `getTreat()` method and return to the `main` method.
+Notice the `giveTreat` method has been removed from the call stack and the
+debugger has stopped at the next line of code `snoopy.giveTreat();`.
+
+![fido givetreat method returned](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/fido_givetreat_complete.png)
+
+Press "Step Into" to execute `snoopy.giveTreat()` and stop at the first
+line in the method.  The variable `this` points at the same object
+as `snoopy`:
+
+![debugger this snoopy](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_snoopy.png)     
+
+Press "Step Over" twice to execute the two assignment statements.
+The object referenced by `this` is updated:
+
+![snoopy debug update state](https://curriculum-content.s3.amazonaws.com/6676/java-mod2-strings/debugger_this_snoopy2.png)
+
+Press "Step Over" again to return to the `main` method.
+
+Continue to press "Step Into" to execute the remaining method calls in the `main` method,
+while pressing "Step Over" for assignment statements.
+Observe how  the implicit parameter `this` is assigned to the invocation object in each call to
+`giveBath` and `toString` (implicitly called in the print statement).  Notice
+the static method `bark` does not have a `this` reference when called.
  
 ### Comprehension Check
 
